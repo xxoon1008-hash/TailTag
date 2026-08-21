@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../models/tag.dart';
 import '../models/location_record.dart';
 import '../providers/tag_provider.dart';
+import '../utils/ble_utils.dart';
 import 'map_screen.dart' show PinTailPainter;
 
 class AllTagsMapScreen extends StatefulWidget {
@@ -311,7 +312,7 @@ class _AllTagsMapScreenState extends State<AllTagsMapScreen> {
                       title: Text(info.tag.name,
                           style: const TextStyle(fontWeight: FontWeight.w600)),
                       subtitle: Text(
-                        '${_fmt(loc.detectedAt)}  •  ${loc.rssi} dBm',
+                        '${_fmt(loc.detectedAt)}  •  ${BleUtils.distanceLabel(loc.rssi)}  •  ${loc.rssi} dBm',
                         style: const TextStyle(fontSize: 12),
                       ),
                     );
@@ -398,6 +399,8 @@ class _SingleTagCard extends StatelessWidget {
                       const SizedBox(width: 4),
                       Text('${loc.rssi} dBm',
                           style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                      const SizedBox(width: 8),
+                      _MapDistanceChip(rssi: loc.rssi),
                     ],
                   ),
                 ],
@@ -419,4 +422,28 @@ extension on LocationRecord {
   int get day => detectedAt.day;
   String get hour => detectedAt.hour.toString().padLeft(2, '0');
   String get minute => detectedAt.minute.toString().padLeft(2, '0');
+}
+
+class _MapDistanceChip extends StatelessWidget {
+  final int rssi;
+  const _MapDistanceChip({required this.rssi});
+
+  @override
+  Widget build(BuildContext context) {
+    final level = BleUtils.signalLevel(rssi);
+    final colors = [Colors.red, Colors.orange, Colors.yellow[700]!, Colors.green];
+    final color = colors[level];
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withValues(alpha: 0.5)),
+      ),
+      child: Text(
+        BleUtils.distanceLabel(rssi),
+        style: TextStyle(fontSize: 10, color: color, fontWeight: FontWeight.w600),
+      ),
+    );
+  }
 }

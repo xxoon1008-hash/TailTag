@@ -50,6 +50,7 @@ class _TagRegisterScreenState extends State<TagRegisterScreen> {
             _scanResults.add(r);
           }
         }
+        _scanResults.sort((a, b) => b.rssi.compareTo(a.rssi));
       });
     });
 
@@ -68,9 +69,11 @@ class _TagRegisterScreenState extends State<TagRegisterScreen> {
 
   Future<void> _onDeviceSelected(ScanResult result) async {
     final deviceId = result.device.remoteId.str;
+    final mac = result.device.remoteId.str.replaceAll(':', '').toUpperCase();
+    final macSuffix = mac.length >= 4 ? mac.substring(mac.length - 4) : mac;
     final defaultName = result.device.platformName.isNotEmpty
         ? result.device.platformName
-        : '새 태그';
+        : 'TAG-$macSuffix';
 
     final nameController = TextEditingController(text: defaultName);
 
@@ -150,9 +153,11 @@ class _TagRegisterScreenState extends State<TagRegisterScreen> {
                           itemCount: _scanResults.length,
                           itemBuilder: (context, index) {
                             final result = _scanResults[index];
+                            final rawMac = result.device.remoteId.str.replaceAll(':', '').toUpperCase();
+                            final suffix = rawMac.length >= 4 ? rawMac.substring(rawMac.length - 4) : rawMac;
                             final name = result.device.platformName.isNotEmpty
                                 ? result.device.platformName
-                                : '(이름 없음)';
+                                : 'TAG-$suffix';
                             return ListTile(
                               leading: const Icon(Icons.bluetooth_searching),
                               title: Text(name),

@@ -3,8 +3,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 class AuthService {
-  static const String _authBase = 'http://192.168.219.112:8080/api/auth';
-  static const String _userBase = 'http://192.168.219.112:8080/api/users';
+  static const String _authBase = 'http://192.168.0.111:8080/api/auth';
+  static const String _userBase = 'http://192.168.0.111:8080/api/users';
   static const String _tokenKey = 'auth_token';
   static const String _nicknameKey = 'nickname';
   static const String _emailKey = 'email';

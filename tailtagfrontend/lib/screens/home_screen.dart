@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/tag_provider.dart';
+import '../utils/ble_utils.dart';
 import 'tag_register_screen.dart';
 import 'map_screen.dart';
 
@@ -152,12 +153,21 @@ class _HomeScreenState extends State<HomeScreen> {
                           tag.name,
                           style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
-                        subtitle: Text(
-                          lastLocation != null
-                              ? '마지막 감지: ${_formatDateTime(lastLocation.detectedAt)}'
-                              : '아직 감지된 기록이 없습니다',
-                          style: TextStyle(fontSize: 12, color: Colors.grey[500]),
-                        ),
+                        subtitle: lastLocation != null
+                            ? Row(
+                                children: [
+                                  Text(
+                                    '마지막 감지: ${_formatDateTime(lastLocation.detectedAt)}',
+                                    style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  _DistanceChip(rssi: lastLocation.rssi),
+                                ],
+                              )
+                            : Text(
+                                '아직 감지된 기록이 없습니다',
+                                style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+                              ),
                       )
                     : ListTile(
                         leading: CircleAvatar(
@@ -173,17 +183,21 @@ class _HomeScreenState extends State<HomeScreen> {
                           tag.name,
                           style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
-                        subtitle: Text(
-                          lastLocation != null
-                              ? '마지막 감지: ${_formatDateTime(lastLocation.detectedAt)}'
-                              : '아직 감지된 기록이 없습니다',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: lastLocation != null
-                                ? Colors.grey[600]
-                                : Colors.grey[400],
-                          ),
-                        ),
+                        subtitle: lastLocation != null
+                            ? Row(
+                                children: [
+                                  Text(
+                                    '마지막 감지: ${_formatDateTime(lastLocation.detectedAt)}',
+                                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  _DistanceChip(rssi: lastLocation.rssi),
+                                ],
+                              )
+                            : Text(
+                                '아직 감지된 기록이 없습니다',
+                                style: TextStyle(fontSize: 12, color: Colors.grey[400]),
+                              ),
                         trailing: IconButton(
                           icon: const Icon(Icons.delete_outline, color: Colors.grey),
                           onPressed: () =>
@@ -238,5 +252,29 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String _formatDateTime(DateTime dt) {
     return '${dt.month}/${dt.day} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+  }
+}
+
+class _DistanceChip extends StatelessWidget {
+  final int rssi;
+  const _DistanceChip({required this.rssi});
+
+  @override
+  Widget build(BuildContext context) {
+    final level = BleUtils.signalLevel(rssi);
+    final colors = [Colors.red, Colors.orange, Colors.yellow[700]!, Colors.green];
+    final color = colors[level];
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withValues(alpha: 0.5)),
+      ),
+      child: Text(
+        BleUtils.distanceLabel(rssi),
+        style: TextStyle(fontSize: 10, color: color, fontWeight: FontWeight.w600),
+      ),
+    );
   }
 }
