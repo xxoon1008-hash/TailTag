@@ -14,18 +14,20 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
+  late TagProvider _tagProvider;
 
   @override
   void initState() {
     super.initState();
+    _tagProvider = context.read<TagProvider>();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<TagProvider>().startPeriodicScan();
+      _tagProvider.startPeriodicScan();
     });
   }
 
   @override
   void dispose() {
-    context.read<TagProvider>().stopPeriodicScan();
+    _tagProvider.stopPeriodicScan();
     super.dispose();
   }
 

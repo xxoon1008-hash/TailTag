@@ -31,8 +31,8 @@ class TagProvider with ChangeNotifier {
         if (last != null) _lastLocations[tag.deviceId] = last;
       }
       notifyListeners();
-    } catch (_) {
-      // 네트워크 오류 시 빈 목록 유지
+    } catch (e) {
+      debugPrint('loadTags error: $e');
       notifyListeners();
     }
   }
@@ -64,7 +64,11 @@ class TagProvider with ChangeNotifier {
   }
 
   Future<void> _runScanCycle() async {
-    if (_isScanning || _tags.isEmpty) return;
+    if (_isScanning) return;
+    if (_tags.isEmpty) {
+      await loadTags();
+      if (_tags.isEmpty) return;
+    }
     _isScanning = true;
     notifyListeners();
 

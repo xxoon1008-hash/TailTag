@@ -69,7 +69,8 @@ class _TagRegisterScreenState extends State<TagRegisterScreen> {
 
   Future<void> _onDeviceSelected(ScanResult result) async {
     final deviceId = result.device.remoteId.str;
-    final mac = result.device.remoteId.str.replaceAll(':', '').toUpperCase();
+
+    final mac = deviceId.replaceAll(':', '').toUpperCase();
     final macSuffix = mac.length >= 4 ? mac.substring(mac.length - 4) : mac;
     final defaultName = result.device.platformName.isNotEmpty
         ? result.device.platformName
@@ -158,10 +159,11 @@ class _TagRegisterScreenState extends State<TagRegisterScreen> {
                             final name = result.device.platformName.isNotEmpty
                                 ? result.device.platformName
                                 : 'TAG-$suffix';
+                            final idLabel = result.device.remoteId.str;
                             return ListTile(
                               leading: const Icon(Icons.bluetooth_searching),
                               title: Text(name),
-                              subtitle: Text(result.device.remoteId.str),
+                              subtitle: Text(idLabel),
                               trailing: Text('${result.rssi} dBm'),
                               onTap: () => _onDeviceSelected(result),
                             );

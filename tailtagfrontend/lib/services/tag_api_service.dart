@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import '../models/tag.dart';
 
 class TagApiService {
-  static const String _baseUrl = 'http://192.168.0.111:8080/api/tags';
+  static const String _baseUrl = 'http://192.168.219.112:8080/api/tags';
 
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
@@ -17,15 +17,14 @@ class TagApiService {
   }
 
   Future<List<Tag>> getTags() async {
-    final response = await http.get(
-      Uri.parse(_baseUrl),
-      headers: await _headers(),
-    );
+    final response = await http
+        .get(Uri.parse(_baseUrl), headers: await _headers())
+        .timeout(const Duration(seconds: 10));
     if (response.statusCode == 200) {
       final List<dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
       return json.map((e) => Tag.fromJson(e as Map<String, dynamic>)).toList();
     }
-    throw Exception('태그 목록을 불러올 수 없습니다.');
+    throw Exception('태그 목록 로드 실패 (status ${response.statusCode})');
   }
 
   Future<Tag> addTag(String name, String deviceId) async {

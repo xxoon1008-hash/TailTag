@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/tag_provider.dart';
 import '../utils/ble_utils.dart';
 import 'tag_register_screen.dart';
-import 'map_screen.dart';
+import 'tag_finder_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -156,9 +156,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         subtitle: lastLocation != null
                             ? Row(
                                 children: [
-                                  Text(
-                                    '마지막 감지: ${_formatDateTime(lastLocation.detectedAt)}',
-                                    style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+                                  Expanded(
+                                    child: Text(
+                                      '마지막 감지: ${_formatDateTime(lastLocation.detectedAt)}',
+                                      style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
                                   const SizedBox(width: 8),
                                   _DistanceChip(rssi: lastLocation.rssi),
@@ -186,9 +189,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         subtitle: lastLocation != null
                             ? Row(
                                 children: [
-                                  Text(
-                                    '마지막 감지: ${_formatDateTime(lastLocation.detectedAt)}',
-                                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                                  Expanded(
+                                    child: Text(
+                                      '마지막 감지: ${_formatDateTime(lastLocation.detectedAt)}',
+                                      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
                                   const SizedBox(width: 8),
                                   _DistanceChip(rssi: lastLocation.rssi),
@@ -203,16 +209,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           onPressed: () =>
                               _confirmDelete(context, tag.deviceId, tag.name),
                         ),
-                        onTap: lastLocation == null
-                            ? null
-                            : () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => MapScreen(tag: tag),
-                                  ),
-                                );
-                              },
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => TagFinderScreen(tag: tag)),
+                        ),
                       );
               },
             ),
