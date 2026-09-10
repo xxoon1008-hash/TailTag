@@ -66,7 +66,7 @@ class _TagFinderScreenState extends State<TagFinderScreen>
   }
 
   Future<void> _startScan() async {
-    await FlutterBluePlus.startScan(continuousUpdates: true);
+    await FlutterBluePlus.stopScan();
     _scanSub = FlutterBluePlus.scanResults.listen((results) {
       for (final r in results) {
         if (r.device.remoteId.str == widget.tag.deviceId) {
@@ -74,6 +74,7 @@ class _TagFinderScreenState extends State<TagFinderScreen>
         }
       }
     });
+    await FlutterBluePlus.startScan(continuousUpdates: true);
   }
 
   void _onRssi(int rssi) {

@@ -61,6 +61,8 @@ class TagProvider with ChangeNotifier {
   void stopPeriodicScan() {
     _periodicScanTimer?.cancel();
     _periodicScanTimer = null;
+    _bleService.stopScan();
+    _isScanning = false;
   }
 
   Future<void> _runScanCycle() async {
