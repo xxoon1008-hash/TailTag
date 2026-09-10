@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import '../models/tag.dart';
 
 class TagApiService {
-  static const String _baseUrl = 'http://192.168.219.112:8080/api/tags';
+  static const String _baseUrl = 'https://tailtag.onrender.com/api/tags';
 
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
