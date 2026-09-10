@@ -28,7 +28,7 @@ class AuthService {
       Uri.parse('$_authBase/signup'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'email': email, 'password': password, 'nickname': nickname}),
-    ).timeout(const Duration(seconds: 10));
+    ).timeout(const Duration(seconds: 90));
     final body = jsonDecode(utf8.decode(response.bodyBytes));
     if (response.statusCode == 200) {
       await _storage.write(key: _tokenKey, value: body['token']);
@@ -48,7 +48,7 @@ class AuthService {
       Uri.parse('$_authBase/login'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'email': email, 'password': password}),
-    ).timeout(const Duration(seconds: 10));
+    ).timeout(const Duration(seconds: 90));
     final body = jsonDecode(utf8.decode(response.bodyBytes));
     if (response.statusCode == 200) {
       await _storage.write(key: _tokenKey, value: body['token']);
